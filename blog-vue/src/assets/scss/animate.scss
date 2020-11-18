@@ -1,0 +1,76 @@
+@keyframes indexAnimate
+{
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+ 
+@-webkit-keyframes indexAnimate /* Safari 与 Chrome */
+{
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes indexOut
+{
+    from {padding: 0;
+        max-height: 0;
+        opacity: 0;
+    }
+    to {
+        padding: 3rem 2rem;
+        max-height: 40rem;
+        opacity: 1;
+    }
+}
+ 
+@-webkit-keyframes indexOut /* Safari 与 Chrome */
+{
+    from {
+        padding: 0;
+        max-height: 0;
+        opacity: 0;
+    }
+    to {
+        padding: 3rem 2rem;
+        max-height: 40rem;
+        opacity: 1;
+    }
+}
+@keyframes backgroudAnimate
+{
+    from {
+        opacity: 1;
+   }
+   to {
+       opacity: 0.5;
+   }
+}
+ 
+@-webkit-keyframes backgroudAnimate /* Safari 与 Chrome */
+{
+    from {
+         opacity: 1;
+    }
+    to {
+        opacity: 0.5;
+    }
+}
+@keyframes transformAnimate
+{
+    from {
+        transform: scale(1.5);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+ 
+@-webkit-keyframes transformAnimate /* Safari 与 Chrome */
+{
+    from {
+        transform: scale(1.5);
+    }
+    to {
+        transform: scale(1);
+    }
+}

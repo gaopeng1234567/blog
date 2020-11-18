@@ -1,0 +1,11 @@
+.blog-container-safe{
+    @media screen and (max-width: 992px) {
+        width: 70%;
+      }
+      @media screen and (max-width: 768px) {
+        width: 680px;
+      }
+      @media screen and (max-width: 576px) {
+        width: 95%;
+      }
+}
