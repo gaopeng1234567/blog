@@ -1,81 +1,130 @@
 <template>
   <div class="blog-index">
-    <div class="blog-header"></div>
-    <div class="blog-container">
-      <card
-          data-image="/imgs/2.jpg"
-      >
-        <h1 slot="header">Canyons</h1>
-        <div class="content" slot="content">
-          <div class="blog-slider__text">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae
-            voluptate repellendus magni illo ea animi?
+    <push>
+      <el-menu
+          default-active="2"
+          class="el-menu-vertical-demo"
+          @open="handleOpen"
+          @close="handleClose"
+          background-color="#545c64"
+          text-color="#fff"
+          active-text-color="#ffd04b">
+        <el-submenu index="1">
+          <template slot="title">
+            <i class="el-icon-location"></i>
+            <span>导航一</span>
+          </template>
+          <el-menu-item-group>
+            <template slot="title">分组一</template>
+            <el-menu-item index="1-1">选项1</el-menu-item>
+            <el-menu-item index="1-2">选项2</el-menu-item>
+          </el-menu-item-group>
+          <el-menu-item-group title="分组2">
+            <el-menu-item index="1-3">选项3</el-menu-item>
+          </el-menu-item-group>
+          <el-submenu index="1-4">
+            <template slot="title">选项4</template>
+            <el-menu-item index="1-4-1">选项1</el-menu-item>
+          </el-submenu>
+        </el-submenu>
+        <el-menu-item index="2">
+          <i class="el-icon-menu"></i>
+          <span slot="title">导航二</span>
+        </el-menu-item>
+        <el-menu-item index="3" disabled>
+          <i class="el-icon-document"></i>
+          <span slot="title">导航三</span>
+        </el-menu-item>
+        <el-menu-item index="4">
+          <i class="el-icon-setting"></i>
+          <span slot="title">导航四</span>
+        </el-menu-item>
+      </el-menu>
+    </push>
+    <div id="page-wrap">
+<!--   header   -->
+      <div class="blog-header wrapper-inner"></div>
+<!--      content-->
+      <div class="blog-container wrapper-inner">
+        <card
+            data-image="/imgs/2.jpg"
+        >
+          <h1 slot="header">Canyons</h1>
+          <div class="content" slot="content">
+            <div class="blog-slider__text">
+              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae
+              voluptate repellendus magni illo ea animi?
+            </div>
+            <a href="#" class="blog-slider__button">READ MORE</a>
           </div>
-          <a href="#" class="blog-slider__button">READ MORE</a>
-        </div>
-      </card>
-      <card
-          data-image="/imgs/4.jpg"
-      >
-        <h1 slot="header">Canyons</h1>
-        <div class="content" slot="content">
-          <div class="blog-slider__text">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae
-            voluptate repellendus magni illo ea animi?
+        </card>
+        <card
+            data-image="/imgs/4.jpg"
+        >
+          <h1 slot="header">Canyons</h1>
+          <div class="content" slot="content">
+            <div class="blog-slider__text">
+              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae
+              voluptate repellendus magni illo ea animi?
+            </div>
+            <a href="#" class="blog-slider__button">READ MORE</a>
           </div>
-          <a href="#" class="blog-slider__button">READ MORE</a>
-        </div>
-      </card>
-      <card
-          data-image="/imgs/5.jpg"
-      >
-        <h1 slot="header">Canyons</h1>
-        <div class="content" slot="content">
-          <div class="blog-slider__text">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae
-            voluptate repellendus magni illo ea animi?
+        </card>
+        <card
+            data-image="/imgs/5.jpg"
+        >
+          <h1 slot="header">Canyons</h1>
+          <div class="content" slot="content">
+            <div class="blog-slider__text">
+              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae
+              voluptate repellendus magni illo ea animi?
+            </div>
+            <a href="#" class="blog-slider__button">READ MORE</a>
           </div>
-          <a href="#" class="blog-slider__button">READ MORE</a>
-        </div>
-      </card>
-      <card
-          data-image="/imgs/6.jpg"
-      >
-        <h1 slot="header">Canyons</h1>
-        <div class="content" slot="content">
-          <div class="blog-slider__text">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae
-            voluptate repellendus magni illo ea animi?
+        </card>
+        <card
+            data-image="/imgs/6.jpg"
+        >
+          <h1 slot="header">Canyons</h1>
+          <div class="content" slot="content">
+            <div class="blog-slider__text">
+              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae
+              voluptate repellendus magni illo ea animi?
+            </div>
+            <a href="#" class="blog-slider__button">READ MORE</a>
           </div>
-          <a href="#" class="blog-slider__button">READ MORE</a>
-        </div>
-      </card>
+        </card>
+      </div>
     </div>
   </div>
 </template>
 <script>
 import card from "../../components/blog/Card";
+import {Push} from 'vue-burger-menu'
 
 export default {
   components: {
     card,
+    Push
   },
+  methods: {
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath);
+    }
+  }
 };
 </script>
 <style lang="scss">
+@import "../../assets/scss/base";
+
 $hoverEasing: cubic-bezier(0.23, 1, 0.32, 1);
 $returnEasing: cubic-bezier(0.445, 0.05, 0.55, 0.95);
 
-// body {
-//   margin: 40px 0;
-//   font-family: "Raleway";
-//   font-size: 14px;
-//   font-weight: 500;
-//   background-color: #bcaaa4;
-//   -webkit-font-smoothing: antialiased;
-// }
-
 .blog-index {
+
   .title {
     font-family: "Raleway";
     font-size: 24px;
@@ -84,17 +133,7 @@ $returnEasing: cubic-bezier(0.445, 0.05, 0.55, 0.95);
     text-align: center;
   }
 
-  p {
-    line-height: 1.5em;
-  }
-
-  h1 + p,
-  p + p {
-    margin-top: 10px;
-  }
-
   .blog-container {
-    padding: 40px 80px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -139,12 +178,16 @@ $returnEasing: cubic-bezier(0.445, 0.05, 0.55, 0.95);
       }
     }
   }
-
+  //header头部布局
+  .blog-header {
+    height: 254px;
+  }
+  //卡片布局控制
   .card {
     position: relative;
     flex: 0 0 240px;
-    width: 640px;
-    height: 320px;
+    width: 560px;
+    height: 290px;
     background-color: #333;
     overflow: hidden;
     border-radius: 10px;
@@ -152,6 +195,10 @@ $returnEasing: cubic-bezier(0.445, 0.05, 0.55, 0.95);
     inset rgba(white, 0.5) 0 0 0 6px;
     transition: 1s $returnEasing;
     @media screen and (max-width: 768px) {
+      width: 320px;
+      height: 420px;
+    }
+    @media screen and (max-width: 1360px) {
       width: 320px;
       height: 420px;
     }
@@ -248,6 +295,79 @@ $returnEasing: cubic-bezier(0.445, 0.05, 0.55, 0.95);
     font-size: 36px;
     font-weight: 700;
     text-shadow: rgba(black, 0.5) 0 10px 10px;
+  }
+  //侧边栏 样式控制
+  .bm-burger-button {
+    position: fixed;
+    width: 38px;
+    height: 30px;
+    left: 36px;
+    top: 36px;
+    cursor: pointer;
+  }
+
+  .bm-burger-bars {
+    background-color: #333;
+  }
+
+  .line-style {
+    position: absolute;
+    height: 20%;
+    left: 0;
+    right: 0;
+  }
+
+  .cross-style {
+    position: absolute;
+    top: 12px;
+    right: 2px;
+    cursor: pointer;
+  }
+
+  .bm-cross {
+    background: #bdc3c7;
+  }
+
+  .bm-cross-button {
+    height: 24px;
+    width: 24px;
+  }
+
+  .bm-menu {
+    height: 100%; /* 100% Full-height */
+    width: 0; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Stay on top */
+    top: 0;
+    left: 0;
+    background-color: rgb(84, 92, 100); /* Black*/
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 60px; /* Place content 60px from the top */
+    transition: 0.2s; /*0.5 second transition effect to slide in the sidenav*/
+  }
+
+  .bm-overlay {
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .bm-item-list {
+    margin-left: 0;
+    font-size: 20px;
+  }
+
+  .bm-item-list > * {
+    display: block;
+    text-decoration: none;
+    padding: 0;
+  }
+
+  .bm-item-list > * > span {
+    margin-left: 0px;
+    font-weight: 700;
+    color: white;
+  }
+  .el-menu{
+    border: 0px;
   }
 }
 </style>

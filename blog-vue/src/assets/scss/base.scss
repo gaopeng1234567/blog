@@ -1,11 +1,24 @@
-.blog-container-safe{
-    @media screen and (max-width: 992px) {
-        width: 70%;
-      }
-      @media screen and (max-width: 768px) {
-        width: 680px;
-      }
-      @media screen and (max-width: 576px) {
-        width: 95%;
-      }
+.blog-container-safe {
+  @media screen and (max-width: 992px) {
+    width: 70%;
+  }
+  @media screen and (max-width: 768px) {
+    width: 680px;
+  }
+  @media screen and (max-width: 576px) {
+    width: 95%;
+  }
+}
+
+.wrapper-inner {
+  margin: 0 auto;
+  width: 1360px;
+
+  @media screen and (max-width: 1360px) {
+    width: 980px;
+  }
+  @media screen and (max-width: 540px) {
+    width: 320px;
+  }
+
 }

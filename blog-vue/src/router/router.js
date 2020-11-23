@@ -4,7 +4,7 @@ import Index from '../views/index'
 import Register from '../views/register'
 import Login from '../views/login'
 import Demo from '../views/demo'
-// import Test from '../views/test'
+import Test from '../views/test'
 import BlogIndex from '../views/blog/index'
 
 Vue.use(Router);
@@ -30,11 +30,11 @@ export default new Router({
             name: 'demo',
             component: Demo
         },
-        // {
-        //     path:'/',
-        //     name: 'blogIndex',
-        //     component: Test
-        // },
+        {
+            path:'/',
+            name: 'blogIndex',
+            component: Test
+        },
         {
             path:'/index/blogIndex',
             name: 'blogIndex',
