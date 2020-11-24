@@ -1,5 +1,6 @@
 <template>
   <div class="blog-index">
+    <!--    侧边栏弹出-->
     <push>
       <el-menu
           default-active="2"
@@ -42,56 +43,19 @@
       </el-menu>
     </push>
     <div id="page-wrap">
-<!--   header   -->
+      <!--   header 通用头部  -->
       <div class="blog-header wrapper-inner"></div>
-<!--      content-->
+      <!--    文章方块列表  content-->
       <div class="blog-container wrapper-inner">
         <card
-            data-image="/imgs/2.jpg"
+            :data-image='article.dataImage' v-for="(article,i) in articleList" v-bind:key="i"
         >
-          <h1 slot="header">Canyons</h1>
+          <h1 slot="header">{{article.articleHeader}}</h1>
           <div class="content" slot="content">
             <div class="blog-slider__text">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae
-              voluptate repellendus magni illo ea animi?
+              {{article.articleContent}}
             </div>
-            <a href="#" class="blog-slider__button">READ MORE</a>
-          </div>
-        </card>
-        <card
-            data-image="/imgs/4.jpg"
-        >
-          <h1 slot="header">Canyons</h1>
-          <div class="content" slot="content">
-            <div class="blog-slider__text">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae
-              voluptate repellendus magni illo ea animi?
-            </div>
-            <a href="#" class="blog-slider__button">READ MORE</a>
-          </div>
-        </card>
-        <card
-            data-image="/imgs/5.jpg"
-        >
-          <h1 slot="header">Canyons</h1>
-          <div class="content" slot="content">
-            <div class="blog-slider__text">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae
-              voluptate repellendus magni illo ea animi?
-            </div>
-            <a href="#" class="blog-slider__button">READ MORE</a>
-          </div>
-        </card>
-        <card
-            data-image="/imgs/6.jpg"
-        >
-          <h1 slot="header">Canyons</h1>
-          <div class="content" slot="content">
-            <div class="blog-slider__text">
-              Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae
-              voluptate repellendus magni illo ea animi?
-            </div>
-            <a href="#" class="blog-slider__button">READ MORE</a>
+            <a :href="'/#/index/articleDetail/'+article.id" class="blog-slider__button">READ MORE</a>
           </div>
         </card>
       </div>
@@ -106,6 +70,36 @@ export default {
   components: {
     card,
     Push
+  },
+  data() {
+    return {
+      articleList: [
+        {
+          id: '1',
+          dataImage: "/imgs/2.jpg",
+          articleHeader: "Canyons",
+          articleContent: ' Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae voluptate repellendus magni illo ea animi?',
+        },
+        {
+          id: '2',
+          dataImage: "/imgs/7.jpg",
+          articleHeader: "Patrick",
+          articleContent: ' Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae voluptate repellendus magni illo ea animi?',
+        },
+        {
+          id: '3',
+          dataImage: "/imgs/5.jpg",
+          articleHeader: "ZhangJiaZhinv",
+          articleContent: ' Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae voluptate repellendus magni illo ea animi?',
+        },
+        {
+          id: '4',
+          dataImage: "/imgs/6.jpg",
+          articleHeader: "Pouchoe",
+          articleContent: ' Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae voluptate repellendus magni illo ea animi?',
+        },
+      ]
+    }
   },
   methods: {
     handleOpen(key, keyPath) {
@@ -143,7 +137,7 @@ $returnEasing: cubic-bezier(0.445, 0.05, 0.55, 0.95);
     margin: 40px;
     transform: perspective(800px);
     transform-style: preserve-3d;
-    cursor: pointer;
+    //cursor: pointer;
     // background-color: #fff;
 
     &:hover {
@@ -178,10 +172,12 @@ $returnEasing: cubic-bezier(0.445, 0.05, 0.55, 0.95);
       }
     }
   }
+
   //header头部布局
   .blog-header {
     height: 254px;
   }
+
   //卡片布局控制
   .card {
     position: relative;
@@ -296,6 +292,7 @@ $returnEasing: cubic-bezier(0.445, 0.05, 0.55, 0.95);
     font-weight: 700;
     text-shadow: rgba(black, 0.5) 0 10px 10px;
   }
+
   //侧边栏 样式控制
   .bm-burger-button {
     position: fixed;
@@ -366,7 +363,8 @@ $returnEasing: cubic-bezier(0.445, 0.05, 0.55, 0.95);
     font-weight: 700;
     color: white;
   }
-  .el-menu{
+
+  .el-menu {
     border: 0px;
   }
 }
