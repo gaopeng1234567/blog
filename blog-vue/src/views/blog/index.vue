@@ -44,16 +44,18 @@
     </push>
     <div id="page-wrap">
       <!--   header 通用头部  -->
-      <div class="blog-header wrapper-inner"></div>
+      <div class="blog-header">
+        <blog-header></blog-header>
+      </div>
       <!--    文章方块列表  content-->
       <div class="blog-container wrapper-inner">
         <card
             :data-image='article.dataImage' v-for="(article,i) in articleList" v-bind:key="i"
         >
-          <h1 slot="header">{{article.articleHeader}}</h1>
+          <h1 slot="header">{{ article.articleHeader }}</h1>
           <div class="content" slot="content">
             <div class="blog-slider__text">
-              {{article.articleContent}}
+              {{ article.articleContent }}
             </div>
             <a :href="'/#/index/articleDetail/'+article.id" class="blog-slider__button">READ MORE</a>
           </div>
@@ -64,12 +66,14 @@
 </template>
 <script>
 import card from "../../components/blog/Card";
-import {Push} from 'vue-burger-menu'
+import {Push} from 'vue-burger-menu';
+import BlogHeader from "@/components/blog/BlogHeader";
 
 export default {
   components: {
     card,
-    Push
+    Push,
+    BlogHeader
   },
   data() {
     return {
@@ -175,7 +179,7 @@ $returnEasing: cubic-bezier(0.445, 0.05, 0.55, 0.95);
 
   //header头部布局
   .blog-header {
-    height: 254px;
+    height: 354px;
   }
 
   //卡片布局控制

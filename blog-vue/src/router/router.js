@@ -4,7 +4,7 @@ import Index from '../views/index'
 import Register from '../views/register'
 import Login from '../views/login'
 import Demo from '../views/demo'
-// import Test from '../views/test'
+import BlogHeader from "@/components/blog/BlogHeader";
 import BlogIndex from '../views/blog/index'
 import Article from "@/views/blog/article";
 
@@ -31,11 +31,11 @@ export default new Router({
             name: 'demo',
             component: Demo
         },
-        // {
-        //     path:'/',
-        //     name: 'blogIndex',
-        //     component: Test
-        // },
+        {
+            path:'/test',
+            name: 'blogIndex',
+            component: BlogHeader
+        },
         {
             path:'/index/blogIndex',
             name: 'blogIndex',
