@@ -1,5 +1,8 @@
 <template>
-  <viewer :options="options" :initialValue="viewerText" height="500px"></viewer>
+  <viewer
+      :options="options"
+      :initialValue="viewerText"
+  />
 </template>
 
 <script>
@@ -25,41 +28,8 @@ export default {
       options: {
         plugins: [[codeSyntaxHighlight, {hljs}]],
         usageStatistics: false,
-        language: 'zh-CN',
-        toolbarItems: [
-          'heading',
-          // 'bold',
-          // 'italic',
-          // 'strike',
-          // 'divider',
-          // 'hr',
-          // 'quote',
-          // 'divider',
-          // 'ul',
-          // 'ol',
-          // 'task',
-          // 'indent',
-          // 'outdent',
-          // 'divider',
-          // 'table',
-          // 'image',
-          // 'link',
-          // 'divider',
-          // 'code',
-          // 'codeblock',
-          // {
-          //   type:'button',
-          //   options: {
-          //     event: 'helpClick',
-          //     tooltip: '帮助',
-          //     el:this.createLastButton('help'),
-          //     style: 'background:none;color:#333;'
-          //   }
-          // }
-
-        ]
+        language: 'zh-CN'
       },
-
     };
   },
   methods: {

@@ -122,7 +122,7 @@ $hoverEasing: cubic-bezier(0.23, 1, 0.32, 1);
 $returnEasing: cubic-bezier(0.445, 0.05, 0.55, 0.95);
 
 .blog-index {
-
+  font-family: 'Josefin Sans', sans-serif;
   .title {
     font-family: "Raleway";
     font-size: 24px;
@@ -180,6 +180,9 @@ $returnEasing: cubic-bezier(0.445, 0.05, 0.55, 0.95);
   //header头部布局
   .blog-header {
     height: 354px;
+    @media screen and (max-width: 768px) {
+      height: auto;
+    }
   }
 
   //卡片布局控制
@@ -305,6 +308,7 @@ $returnEasing: cubic-bezier(0.445, 0.05, 0.55, 0.95);
     left: 36px;
     top: 36px;
     cursor: pointer;
+    z-index: 9;
   }
 
   .bm-burger-bars {

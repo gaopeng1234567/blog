@@ -1,5 +1,6 @@
 <template>
   <div>
+    <blog-header></blog-header>
     <div>
       <el-button @click="changeEidter()">编辑</el-button>
     </div>
@@ -15,12 +16,15 @@
 <script>
 import TuiViewer from "@/components/blog/TuiViewer";
 import TuiEditor from "@/components/blog/TuiEditor";
+import BlogHeader from "@/components/blog/BlogHeader";
+
 
 export default {
   name: "articleDetail",
   components: {
     TuiViewer,
-    TuiEditor
+    TuiEditor,
+    BlogHeader
   },
   data() {
     return {

@@ -5,7 +5,7 @@
         <h4><a href="#category">patrick</a></h4>
         <h1>KEN BURNS HEADERS ARE THE BEST</h1>
         <div class="meta">
-          <a href="https://twitter.com/nodws" target="_b" class="author"></a><br>
+          <a href="#/index/blogIndex" target="_b" class="author"></a><br>
           By patrick on November 30, 2020
         </div>
       </div>
@@ -18,7 +18,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import url('https://fonts.googleapis.com/css?family=Josefin+Sans:400,400i,600,600i');
+@import '../../assets/font/josefin.css';
 
 .blog-header-wrapper {
   font-family: 'Josefin Sans', sans-serif;
@@ -39,6 +39,7 @@ export default {
     max-height: 354px;
     min-width: 300px;
     color: #eee;
+    //z-index: 0;
   }
 
   .header:after {
@@ -95,6 +96,9 @@ export default {
       margin-inline-start: 0px;
       margin-inline-end: 0px;
       font-weight: bold;
+      @media screen and (max-width: 768px) {
+        margin-bottom: 0px;
+      }
     }
   }
 

@@ -84,7 +84,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import url("https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800");
+@import '../../assets/font/josefin.css';
 * {
   box-sizing: border-box;
 }

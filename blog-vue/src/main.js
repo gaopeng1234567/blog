@@ -5,6 +5,7 @@ import ElementUI from 'element-ui';
 import router from './router/router'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'font-awesome/css/font-awesome.css'
+import './assets/font/josefin.css'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);
