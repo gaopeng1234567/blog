@@ -1,260 +1,1080 @@
-<template>
-  <div>
-    <blog-header></blog-header>
-    <div>
-      <el-button @click="changeEidter()">编辑</el-button>
-    </div>
-    <div class="container">
-      <!--    固定头部-->
-      <!--    editor-->
-      <tui-viewer v-if="viewerShow" :viewerText="viewerText" ref="tui-editor"></tui-viewer>
-    </div>
-    <tui-editor v-if="!viewerShow" :height="'100vh'"></tui-editor>
-  </div>
-</template>
+<!--<template>-->
+<!--  <div>-->
+<!--    <blog-header></blog-header>-->
+<!--    <div>-->
+<!--      <el-button @click="changeEidter()">编辑</el-button>-->
+<!--    </div>-->
+<!--    <div class="container">-->
+<!--      &lt;!&ndash;    固定头部&ndash;&gt;-->
+<!--      &lt;!&ndash;    editor&ndash;&gt;-->
+<!--      <tui-viewer v-if="viewerShow" :viewerText="viewerText" ref="tui-editor"></tui-viewer>-->
+<!--    </div>-->
+<!--    <tui-editor v-if="!viewerShow" :height="'100vh'"></tui-editor>-->
+<!--  </div>-->
+<!--</template>-->
 
-<script>
-import TuiViewer from "@/components/blog/TuiViewer";
-import TuiEditor from "@/components/blog/TuiEditor";
-import BlogHeader from "@/components/blog/BlogHeader";
+<!--<script>-->
+<!--import TuiViewer from "@/components/blog/TuiViewer";-->
+<!--import TuiEditor from "@/components/blog/TuiEditor";-->
+<!--import BlogHeader from "@/components/blog/BlogHeader";-->
 
 
-export default {
-  name: "articleDetail",
-  components: {
-    TuiViewer,
-    TuiEditor,
-    BlogHeader
-  },
-  data() {
-    return {
-      viewerShow: true,
-      viewerText: '### JMX简介\n' +
-          '\n' +
-          '在Java程序中，我们常常需要对JVM和系统进行检测，在以前，开发人员必须通过一些底层的 JVM API，比如 JVMPI 和 JVMTI 等，才能监测 Java 程序运行过程中的一系列情况，但是这种需要大量的 C 程序和 JNI 调用，开发效率十分低下，为了解决这个问题，Sun 公司也在其 Java SE 5 版本中，正式提出了 Java 管理扩展（Java Management Extensions，JMX）用来管理检测 Java 程序，同时 JMX 也在 J2EE 1.4 中被发布。\n' +
-          '\n' +
-          '### MBean、MBeanServer\n' +
-          'MBean是Managed Bean的简称。在JMX中MBean代表一个被管理的资源实例，通过MBean中暴露的方法和属性，外界可以获取被管理的资源的状态和操纵MBean的行为。\n' +
-          '\n' +
-          '\n' +
-          '\n' +
-          'MBean在一个MBeanServer中。MBeanServer管理这些MBean，并且代理外界对它们的访问。并且MBeanServer提供了一种注册机制，外界可以通过名字来得到相应的MBean实例。\n' +
-          '\n' +
-          '\n' +
-          '\n' +
-          '\n' +
-          '\n' +
-          '创建MBean时，必须遵循一种特定的设计模式。模型MBean类必须实现一个具有以下名称的接口：“模型类名称”加MBean。\n' +
-          '### 代码实例\n' +
-          '```java\n' +
-          'public interface TestMBean {\n' +
-          '    public void close();\n' +
-          '\n' +
-          '    public void start();\n' +
-          '\n' +
-          '    public void change(String name);\n' +
-          '}\n' +
-          '\n' +
-          '\n' +
-          'public class Test implements TestMBean {\n' +
-          '    @Override\n' +
-          '    public void close() {\n' +
-          '        System.out.println(\\"关闭\\");\n' +
-          '    }\n' +
-          '\n' +
-          '    @Override\n' +
-          '    public void start() {\n' +
-          '        System.out.println(\\"打开\\");\n' +
-          '    }\n' +
-          '\n' +
-          '    @Override\n' +
-          '    public void change(String name) {\n' +
-          '        System.out.println(\\"改变-------》\\"+name);\n' +
-          '    }\n' +
-          '}\n' +
-          '\n' +
-          '```\n' +
-          '首先我们需要将MBean实现注册到MBean服务器，注册MBean之后，为了能够对其进行测试，需要添加一个死循环以防止应用程序终止，然后才能通过JConsole访问MBean。\n' +
-          '\n' +
-          'ObjectName表示一个MBean的对象名称。\n' +
-          '```java\n' +
-          '\n' +
-          'public class Main {\n' +
-          '    public static void main(String[] args) {\n' +
-          '        try {\n' +
-          '            ObjectName objectName = new ObjectName(\\"com.baeldung.tutorial:type=basic,name=game\\");\n' +
-          '            MBeanServer server = ManagementFactory.getPlatformMBeanServer();\n' +
-          '            server.registerMBean(new Test(), objectName);\n' +
-          '        } catch (MalformedObjectNameException | InstanceAlreadyExistsException |\n' +
-          '                MBeanRegistrationException | NotCompliantMBeanException e) {\n' +
-          '            // handle exceptions\n' +
-          '        }\n' +
-          '\n' +
-          '        for(;;){\n' +
-          '            try {\n' +
-          '                Thread.sleep(1000);\n' +
-          '            } catch (InterruptedException e) {\n' +
-          '                e.printStackTrace();\n' +
-          '            }\n' +
-          '        }\n' +
-          '    }\n' +
-          '}\n' +
-          '\n' +
-          '```\n' +
-          '\n' +
-          '要启动JConsole，可以打开一个终端窗口并运行jconsole命令，这个程序在JDK_HOME/bin下。\n' +
-          '\n' +
-          'JConsole允许创建本地连接以及与远程进程的连接，我们可以在本地进程列表中看到我们的程序名称。只需选择应用程序并单击“连接”按钮，连接后转到MBean选项卡，我们就可以动态更改的值。\n' +
-          '\n' +
-          '![在这里插入图片描述](https://img-blog.csdnimg.cn/20200807161231902.png)![在这里插入图片描述](https://img-blog.csdnimg.cn/20200807161247503.png)\n' +
-          '\n' +
-          '### 客户端示例\n' +
-          '虽然JConsole提供了图形化界面操作，但是有些地方就不太合适使用，比如我们需要定期调用MBean的某些功能，每10分钟检查一次状态。在这种情况下，我们需要自己编写一个连接到JMX MBean服务器并调用MBean操作的操作。\n' +
-          '\n' +
-          '以下代码启动MBean服务器，端口为9696，并禁用了SSL和身份验证。\n' +
-          '\n' +
-          '```java\n' +
-          'public class Main {\n' +
-          '    private static int PORT=9696;\n' +
-          '\n' +
-          '    public static void main(String[] args) {\n' +
-          '        try {\n' +
-          '\n' +
-          '            ObjectName objectName = new ObjectName(\\"com.hxl.jmx:type=basic,name=hxl\\");\n' +
-          '            MBeanServer server = ManagementFactory.getPlatformMBeanServer();\n' +
-          '            server.registerMBean(new Test(), objectName);\n' +
-          '            LocateRegistry.createRegistry(PORT);\n' +
-          '\n' +
-          '            JMXServiceURL url = new JMXServiceURL\n' +
-          '                    (\\"service:jmx:rmi:///jndi/rmi://localhost:\\"+PORT+\\"/jmxrmi\\");\n' +
-          '            JMXConnectorServer jcs = JMXConnectorServerFactory.newJMXConnectorServer(url, null, server);\n' +
-          '\n' +
-          '\n' +
-          '            jcs.start();\n' +
-          '        } catch (Exception e) {\n' +
-          '        }\n' +
-          '        for(;;){\n' +
-          '            try {\n' +
-          '                Thread.sleep(1000);\n' +
-          '            } catch (InterruptedException e) {\n' +
-          '                e.printStackTrace();\n' +
-          '            }\n' +
-          '        }\n' +
-          '    }\n' +
-          '}\n' +
-          '\n' +
-          '```\n' +
-          '上面这段还可以通过启动参数来控制，不需要编写代码，但如果同时存在的话，两个端口貌似是都可以使用。\n' +
-          '```java\n' +
-          '-Dcom.sun.management.jmxremote.port=1234\n' +
-          '-Dcom.sun.management.jmxremote.authenticate=false\n' +
-          '-Dcom.sun.management.jmxremote.ssl=false\n' +
-          '```\n' +
-          '下面是客户端，大概三步。\n' +
-          '\n' +
-          '1. 创建JMXServiceURL，给他传递RMI主机和端口，所有的JMX URL都必须以“service:jmx”开头，否则会抛MalformedURLException。\n' +
-          '\n' +
-          '\n' +
-          '2. 通过JMXConnectorFactory获取一个JMXConnector实\n' +
-          '\n' +
-          '\n' +
-          '3. 通过MBeanServerInvocationHandler返回TestMBean代理\n' +
-          '\n' +
-          '```java\n' +
-          'public class ClientTest {\n' +
-          '    private static final String HOST=\\"127.0.0.1\\";\n' +
-          '    private static int PORT=9696;\n' +
-          '\n' +
-          '    public static void main(String[] args) {\n' +
-          '\n' +
-          '        try {\n' +
-          '            JMXServiceURL url =\n' +
-          '                    new JMXServiceURL(\\"service:jmx:rmi:///jndi/rmi://\\" + HOST + \\":\\" + PORT + \\"/jmxrmi\\");\n' +
-          '\n' +
-          '\t\t\t//之后，我们必须使用JMXConnector工厂类来获取实例。\n' +
-          '            JMXConnector jmxConnector = JMXConnectorFactory.connect(url);\n' +
-          '\n' +
-          '\n' +
-          '            MBeanServerConnection mbeanServerConnection = jmxConnector.getMBeanServerConnection();\n' +
-          '            ObjectName mbeanName = new ObjectName(\\"com.hxl.jmx:type=basic,name=hxl\\");\n' +
-          '\n' +
-          '\t\t\t//获取代理，如果获得代理成功，就可以调用MBean公开的任何操作。\n' +
-          '            TestMBean mbeanProxy =\n' +
-          '                    (TestMBean) MBeanServerInvocationHandler.newProxyInstance(\n' +
-          '                            mbeanServerConnection, mbeanName, TestMBean.class, true);\n' +
-          '            mbeanProxy.start();\n' +
-          '            mbeanProxy.change(\\"test\\");\n' +
-          '        } catch (MalformedURLException e) {\n' +
-          '            e.printStackTrace();\n' +
-          '        } catch (IOException e) {\n' +
-          '            e.printStackTrace();\n' +
-          '        } catch (MalformedObjectNameException e) {\n' +
-          '            e.printStackTrace();\n' +
-          '        }\n' +
-          '    }\n' +
-          '}\n' +
-          '\n' +
-          '```\n' +
-          '运行之后控制台会输出如下：\n' +
-          '\n' +
-          '![在这里插入图片描述](https://img-blog.csdnimg.cn/20200807172500772.png)\n' +
-          '\n' +
-          '\n' +
-          '### Tomcat JMX\n' +
-          '\n' +
-          '首先需要在catalina.sh中配置开启JMX，Windows为catalina.bat，以下在Linux中演示，在catalina.sh中加入以下参数即可，端口可以随意更改，但是注意需要在一行。\n' +
-          '```java\n' +
-          'CATALINA_OPTS=\\"-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9999 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false\\"\n' +
-          '```\n' +
-          '\n' +
-          '![在这里插入图片描述](https://img-blog.csdnimg.cn/20200807205548480.png)\n' +
-          '\n' +
-          '通过`./catalina.sh run`运行Tomcat，在JConsole中选中远程连接，输入127.0.0.1:9999进行连接。\n' +
-          '\n' +
-          '![在这里插入图片描述](https://img-blog.csdnimg.cn/20200807205816234.png)\n' +
-          '\n' +
-          '以下演示停止、启动某个项目。\n' +
-          '\n' +
-          '选中最右侧的MBean选项卡，接着展开WebModule。\n' +
-          '\n' +
-          '![在这里插入图片描述](https://img-blog.csdnimg.cn/20200807210000465.png?)\n' +
-          '\n' +
-          '选中某个要停止的项目后，点击\\"操作\\"-----stop()，即可停止项目。\n' +
-          '\n' +
-          '![在这里插入图片描述](https://img-blog.csdnimg.cn/2020080721012057.png)\n' +
-          '\n' +
-          '停止后无法在访问，相反，点击start()可以重新启动。\n' +
-          '\n' +
-          '![在这里插入图片描述](https://img-blog.csdnimg.cn/20200807210217342.png)\n' +
-          '\n' +
-          '基于这个，我们可以自己做一套Tomcat管理软件。", \n' +
-          '        "writeDate": "2020-08-07 08:24:42", \n' +
-          '        "classifyId": 1, \n' +
-          '        "watchCount": 212, \n' +
-          '        "blogDescribe": "", \n' +
-          '        "tags": "", \n' +
-          '        "describe": ""'
-    };
-  },
-  mounted() {
-  },
-  methods: {
-    changeEidter() {
-      this.viewerShow = !this.viewerShow;
-    }
-  }
-}
-</script>
+<!--export default {-->
+<!--  name: "articleDetail",-->
+<!--  components: {-->
+<!--    TuiViewer,-->
+<!--    TuiEditor,-->
+<!--    BlogHeader-->
+<!--  },-->
+<!--  data() {-->
+<!--    return {-->
+<!--      viewerShow: true,-->
+<!--      viewerText: '\n' +-->
+<!--          '\n' +-->
+<!--          '[TOC]\n' +-->
+<!--          '\n' +-->
+<!--          '\n' +-->
+<!--          '\n' +-->
+<!--          '## 五种数据结构\n' +-->
+<!--          '\n' +-->
+<!--          '### string\n' +-->
+<!--          '\n' +-->
+<!--          '- 常用操作\n' +-->
+<!--          '\n' +-->
+<!--          '\t- SET  key  value \t\t\t//存入字符串键值对\n' +-->
+<!--          '\t- MSET  key  value [key value ...] \t//批量存储字符串键值对\n' +-->
+<!--          '\t- SETNX  key  value \t\t//存入一个不存在的字符串键值对\n' +-->
+<!--          '\t- GET  key \t\t\t//获取一个字符串键值\n' +-->
+<!--          '\t- MGET  key  [key ...]\t \t//批量获取字符串键值\n' +-->
+<!--          '\t- DEL  key  [key ...] \t\t//删除一个键\n' +-->
+<!--          '\t- EXPIRE  key  seconds \t\t//设置一个键的过期时间(秒)\n' +-->
+<!--          '\n' +-->
+<!--          '- 原子加减\n' +-->
+<!--          '\n' +-->
+<!--          '\t- INCR  key \t\t\t//将key中储存的数字值加1\n' +-->
+<!--          '\t- DECR  key \t\t\t//将key中储存的数字值减1\n' +-->
+<!--          '\t- INCRBY  key  increment \t\t//将key所储存的值加上increment\n' +-->
+<!--          '\t- DECRBY  key  decrement \t//将key所储存的值减去decrement\n' +-->
+<!--          '\n' +-->
+<!--          '- 使用场景\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 单值缓存\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- redisTemplate.opsForValue().set("patrick", "666");\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 对象缓存\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- \n' +-->
+<!--          '\n' +-->
+<!--          '\t- 分布式锁\n' +-->
+<!--          '\t- 文章阅读计数器\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- \n' +-->
+<!--          '\n' +-->
+<!--          '\t- Web机群session恭喜\n' +-->
+<!--          '\t- 分布式系统全局序列号\n' +-->
+<!--          '\n' +-->
+<!--          '### hash\n' +-->
+<!--          '\n' +-->
+<!--          '- 常用操作\n' +-->
+<!--          '\n' +-->
+<!--          '\t- HSET  key  field  value \t\t\t//存储一个哈希表key的键值\n' +-->
+<!--          '\t- HSETNX  key  field  value \t\t//存储一个不存在的哈希表key的键值\n' +-->
+<!--          '\t- HMSET  key  field  value [field value ...] \t//在一个哈希表key中存储多个键值对\n' +-->
+<!--          '\t- HGET  key  field \t\t\t\t//获取哈希表key对应的field键值\n' +-->
+<!--          '\t- HMGET  key  field  [field ...] \t\t//批量获取哈希表key中多个field键值\n' +-->
+<!--          '\t- HDEL  key  field  [field ...] \t\t//删除哈希表key中的field键值\n' +-->
+<!--          '\t- HLEN  key\t\t\t\t//返回哈希表key中field的数量\n' +-->
+<!--          '\t- HGETALL  key\t\t\t\t//返回哈希表key中所有的键值\n' +-->
+<!--          '\n' +-->
+<!--          '- 原子操作\n' +-->
+<!--          '\n' +-->
+<!--          '\t- HINCRBY  key  field  increment \t\t//为哈希表key中field键的值加上增量increment\n' +-->
+<!--          '\n' +-->
+<!--          '- 使用场景\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 对象缓存\n' +-->
+<!--          '\t- 电商购物车\n' +-->
+<!--          '\t- 购物车操作\n' +-->
+<!--          '\n' +-->
+<!--          '\n' +-->
+<!--          '- 优缺点\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 优点\n' +-->
+<!--          '\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 1）同类数据归类整合储存，方便数据管理\n' +-->
+<!--          '\t\t- 2）相比string操作消耗内存与cpu更小\n' +-->
+<!--          '\t\t- 3）相比string储存更节省空间\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t- 缺点\n' +-->
+<!--          '\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 过期功能不能使用在field上，只能用在key上\n' +-->
+<!--          '\t\t- Redis集群架构下不适合大规模使用\n' +-->
+<!--          '\n' +-->
+<!--          '### 列表list\n' +-->
+<!--          '\n' +-->
+<!--          '- 常用操作\n' +-->
+<!--          '\n' +-->
+<!--          '\t- LPUSH  key  value [value ...] \t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //将一个或多个值value插入到key列表的表头(最左边)\n' +-->
+<!--          '\n' +-->
+<!--          '\t- RPUSH  key  value [value ...]\t \n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //将一个或多个值value插入到key列表的表尾(最右边)\n' +-->
+<!--          '\n' +-->
+<!--          '\t- LPOP  key\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //移除并返回key列表的头元素\n' +-->
+<!--          '\n' +-->
+<!--          '\t- RPOP  key\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //移除并返回key列表的尾元素\n' +-->
+<!--          '\n' +-->
+<!--          '\t- LRANGE  key  start  stop\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //返回列表key中指定区间内的元素，区间以偏移量start和stop指定\n' +-->
+<!--          '\n' +-->
+<!--          '\t- BLPOP  key  [key ...]  timeout\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 从key列表表头弹出一个元素，若列表中没有元素，阻塞等待\t\t\t\t\ttimeout秒,如果timeout=0,一直阻塞等待\n' +-->
+<!--          '\n' +-->
+<!--          '\t- BRPOP  key  [key ...]  timeout \t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 从key列表表尾弹出一个元素，若列表中没有元素，阻塞等待\t\t\t\t\ttimeout秒,如果timeout=0,一直阻塞等待\n' +-->
+<!--          '\n' +-->
+<!--          '- 场景\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 实现数据结构\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- Stack(栈) = LPUSH + LPOP\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- Queue(队列）= LPUSH + RPOP\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- Blocking MQ(阻塞队列）= LPUSH + BRPOP\n' +-->
+<!--          '\n' +-->
+<!--          '\n' +-->
+<!--          '### 集合set\n' +-->
+<!--          '\n' +-->
+<!--          '- 常用操作\n' +-->
+<!--          '\n' +-->
+<!--          '\t- SADD  key  member  [member ...]\t\t\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //往集合key中存入元素，元素存在则忽略，若key不存在则新建\n' +-->
+<!--          '\n' +-->
+<!--          '\t- SREM  key  member  [member ...]\t\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //从集合key中删除元素\n' +-->
+<!--          '\n' +-->
+<!--          '\t- SMEMBERS  key\t\t\t\t\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //获取集合key中所有元素\n' +-->
+<!--          '\n' +-->
+<!--          '\t- SCARD  key\t\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //获取集合key的元素个数\n' +-->
+<!--          '\n' +-->
+<!--          '\t- SISMEMBER  key  member\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //判断member元素是否存在于集合key中\n' +-->
+<!--          '\n' +-->
+<!--          '\t- SRANDMEMBER  key  [count]\t\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //从集合key中选出count个元素，元素不从key中删除\n' +-->
+<!--          '\n' +-->
+<!--          '\t- SPOP  key  [count]\t\t\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //从集合key中选出count个元素，元素从key中删除\n' +-->
+<!--          '\n' +-->
+<!--          '- 运算操作\n' +-->
+<!--          '\n' +-->
+<!--          '\t- SINTER  key  [key ...] \n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //交集运算\n' +-->
+<!--          '\n' +-->
+<!--          '\t- SINTERSTORE  destination  key  [key ..]\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //将交集结果存入新集合destination中\n' +-->
+<!--          '\n' +-->
+<!--          '\t- SUNION  key  [key ..] \t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //并集运算\n' +-->
+<!--          '\n' +-->
+<!--          '\t- SUNIONSTORE  destination  key  [key ...]\t\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //将并集结果存入新集合destination中\n' +-->
+<!--          '\n' +-->
+<!--          '\t- SDIFF  key  [key ...] \n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //差集运算\n' +-->
+<!--          '\n' +-->
+<!--          '\t- SDIFFSTORE  destination  key  [key ...]\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //将差集结果存入新集合destination中\n' +-->
+<!--          '\n' +-->
+<!--          '- 使用场景\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 抽奖\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- \n' +-->
+<!--          '\n' +-->
+<!--          '### 有序集合zset\n' +-->
+<!--          '\n' +-->
+<!--          '- 常用操作\n' +-->
+<!--          '\n' +-->
+<!--          '\t- ZADD key score member [[score member]…]\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- /往有序集合key中加入带分值元素\n' +-->
+<!--          '\n' +-->
+<!--          '\t- ZREM key member [member …]\t\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //从有序集合key中删除元素\n' +-->
+<!--          '\n' +-->
+<!--          '\t- ZSCORE key member \t\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //返回有序集合key中元素member的分值\n' +-->
+<!--          '\n' +-->
+<!--          '\t- ZINCRBY key increment member\t\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //为有序集合key中元素member的分值加上increment \n' +-->
+<!--          '\n' +-->
+<!--          '\t- ZCARD key\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //返回有序集合key中元素个数\n' +-->
+<!--          '\n' +-->
+<!--          '\t- ZRANGE key start stop [WITHSCORES]\t\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //正序获取有序集合key从start下标到stop下标的元素\n' +-->
+<!--          '\n' +-->
+<!--          '\t- ZREVRANGE key start stop [WITHSCORES]\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- //倒序获取有序集合key从start下标到stop下标的元素\n' +-->
+<!--          '\n' +-->
+<!--          '\t- ZINTERSTORE dest-key [key1,key2]\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 将存在的两个zset求交集到一个新的zest，并且分值相加\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 交集和并集，可以通过聚合函数 aggregate传入不同的sum、min、max实现不同的效果\n' +-->
+<!--          '\n' +-->
+<!--          '- 场景\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 排行榜\n' +-->
+<!--          '\n' +-->
+<!--          '## 持久化\n' +-->
+<!--          '\n' +-->
+<!--          '### RDB快照(snapshot)\n' +-->
+<!--          '\n' +-->
+<!--          '- \n' +-->
+<!--          '- 数据格式\n' +-->
+<!--          '\n' +-->
+<!--          '\t- \n' +-->
+<!--          '\n' +-->
+<!--          '- 触发机制\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 触发条件\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- # save 60 1000 //关闭RDB只需要将所有的save保存策略注释掉即可\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- 当60秒内有1000次命令才会进行RDB快照\n' +-->
+<!--          '\n' +-->
+<!--          '\t- save 命令\n' +-->
+<!--          '\t- bgsave命令\n' +-->
+<!--          '\n' +-->
+<!--          '- 优缺点\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 优点\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- RDB文件小，非常适合定时备份，用于灾难恢复。\n' +-->
+<!--          '\n' +-->
+<!--          '因为RDB文件中直接存储的是内存数据，而AOF文件中存储的是一条条命令，需要应用命令。Redis加载RDB文件的速度比AOF快很多。\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 缺点\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t- \n' +-->
+<!--          '\t\t- RDB持久化方式不能做到实时/秒级持久化。实时持久化要全量刷内存到磁盘，成本太高。每秒fork子进程也会阻塞主进程，影响性能。RDB文件是二进制文件，随着Redis不断迭代有多个rdb文件的版本，不支持跨版本兼容。老的Redis无法识别新的RDB文件格式。\n' +-->
+<!--          '\n' +-->
+<!--          '### AOF(append-only file)\n' +-->
+<!--          '\n' +-->
+<!--          '- 概念\n' +-->
+<!--          '\n' +-->
+<!--          '\t- \n' +-->
+<!--          '\t- 快照功能并不是非常耐久(durable): 如果 Redis 因为某些原因而造成故障停机， 那么服务器将丢失最近写入、且仍未保存到快照中的那些数据。从 1.1 版本开始， Redis 增加了一种完全耐久的持久化方 式: AOF 持久化，将修改的每一条指令记录进文件appendonly.aof中(先写入os cache，每隔一段时间 fsync到磁盘)\n' +-->
+<!--          '\n' +-->
+<!--          '- 开启方式\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 修改配置文件 appendonly  yes\n' +-->
+<!--          '\n' +-->
+<!--          '- 数据格数\n' +-->
+<!--          '\n' +-->
+<!--          '\t- \n' +-->
+<!--          '\n' +-->
+<!--          '- AOF重写\n' +-->
+<!--          '\n' +-->
+<!--          '\t- AOF文件里可能有太多没用指令，所以AOF会定期根据内存的最新数据生成aof文件\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 举例：比如incr 命令执行了6次 从1一直加到7，那不如优化成 set ** 7 一次来的快\n' +-->
+<!--          '\t\t- 什么时候回进行重写？\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- 配置文件\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t\t- #auto‐aof‐rewrite‐min‐size64mb//aof文件至少要达到64M才会自动重写，文件太小恢复速度本来就 很快，重写的意义不大\n' +-->
+<!--          '\t\t\t\t- #auto‐aof‐rewrite‐percentage100//aof文件自上一次重写后文件大小增长了100%则再次触发重写\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- 命令:\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t\t- 进入redis客户端执行命令bgrewriteaof重写AOF\n' +-->
+<!--          '\n' +-->
+<!--          '### Redis 4.0 混合持久化（可以理解为AOF的增强版）\n' +-->
+<!--          '即：在AOF进行重写的时候，不仅优化，而且还修改成了RDP的文件格式（因为恢复很快）\n' +-->
+<!--          '\n' +-->
+<!--          '- 概念\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 重启 Redis 时，我们很少使用 RDB来恢复内存状态，因为会丢失大量数据。我们通常使用 AOF 日志重 放，但是重放 AOF 日志性能相对 RDB来说要慢很多，这样在 Redis 实例很大的情况下，启动需要花费很 长的时间。 Redis 4.0 为了解决这个问题，带来了一个新的持久化选项——混合持久化。 通过如下配置可以开启混合持久化(必须先开启aof)\n' +-->
+<!--          '\n' +-->
+<!--          '- 开启（默认就是开启的）\n' +-->
+<!--          '\n' +-->
+<!--          '\t- aof‐use‐rdb‐preamble yes\n' +-->
+<!--          '\n' +-->
+<!--          '- 数据格式\n' +-->
+<!--          '\n' +-->
+<!--          '\t- \n' +-->
+<!--          '\n' +-->
+<!--          '### Redis数据备份策略\n' +-->
+<!--          '\n' +-->
+<!--          '- 1. 写crontab定时调度脚本，每小时都copy一份rdb或aof的备份到一个目录中去，仅仅保留最近48 小时的备份\n' +-->
+<!--          '- 2. 每天都保留一份当日的数据备份到一个目录中去，可以保留最近1个月的备份\n' +-->
+<!--          '- 3. 每次copy备份的时候，都把太旧的备份给删了\n' +-->
+<!--          '- 4. 每天晚上将当前机器上的备份复制一份到其他机器上，以防机器损坏\n' +-->
+<!--          '\n' +-->
+<!--          '## 分布式锁\n' +-->
+<!--          '\n' +-->
+<!--          '### Redis Lua脚本\n' +-->
+<!--          '\n' +-->
+<!--          '- Redis Lua脚本\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 好处\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 1、减少网络开销:本来5次网络请求的操作，可以用一个请求完成，原先5次请求的逻辑放在redis服务器 上完成。使用脚本，减少了网络往返时延。这点跟管道类似。\n' +-->
+<!--          '\t\t-  2、原子操作:Redis会将整个脚本作为一个整体执行，中间不会被其他命令插入。管道不是原子的，不过 redis的批量操作命令(类似mset)是原子的。 \n' +-->
+<!--          '\t\t- 3、替代redis的事务功能:redis自带的事务功能很鸡肋，报错不支持回滚，而redis的lua脚本几乎实现了 常规的事务功能，支持报错回滚操作，官方推荐如果要使用redis的事务功能可以用redis lua替代\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 语法\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- eval"return{KEYS[1],KEYS[2],ARGV[1],ARGV[2]}"2key1key2firstseco nd\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- \n' +-->
+<!--          '\n' +-->
+<!--          '\t- 注意\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 注意，不要在Lua脚本中出现死循环和耗时的运算，否则redis会阻塞，将不接受其他的命令， 所以使用 时要注意不能出现死循环、耗时的运算。redis是单进程、单线程执行脚本。管道不会阻塞redis。\n' +-->
+<!--          '\n' +-->
+<!--          '### 自己写代码实现\n' +-->
+<!--          '\n' +-->
+<!--          '- \n' +-->
+<!--          '\n' +-->
+<!--          '### 使用Redisson实现\n' +-->
+<!--          '\n' +-->
+<!--          '- 实现原理\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 首先一个线程来了以后会执行创建一个Radisson,然后执行lock方法，lua脚本，有三段逻辑，锁的存储结构是hash 锁名字所谓key，存储的map（当前线程id作为key,value = 1），第一段逻辑成功设置锁，第二段逻辑支持重入锁，第三段逻辑返回当前锁的剩余过期时间，前俩都是当前线程，后面哪个是其他线程。当设置完之后，会创建一个timer每隔三秒判断时候当前线程是否还持有锁，如果有则续命。 等待的线程while循环，等过期时间到了再尝试获取锁\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- \n' +-->
+<!--          '\n' +-->
+<!--          '- 弊端\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 他也不是最完美的，假如在写入的锁的时候，redis的master挂了，此时有其他线程在重新选举的master上进行了上锁，还是会出现这个问题。解决方法，强一致性，采用zookeeper的原理，只有多数节点成功才认为上锁成功\n' +-->
+<!--          '\t- 弊端二，当在高并发下，一个商品key槽位分布在了一个master上，所有请求都在打在了这个上面，扩展集群是没有用的\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 解决方式:\n' +-->
+<!--          '分段锁\n' +-->
+<!--          '\n' +-->
+<!--          '## 缓存设计及问题\n' +-->
+<!--          '\n' +-->
+<!--          '### 缓存设计\n' +-->
+<!--          '\n' +-->
+<!--          '- 缓存穿透\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 概念\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 缓存穿透是指查询一个根本不存在的数据， 缓存层和存储层都不会命中， 通常出于容错的考虑， 如果从存储 层查不到数据则不写入缓存层。\n' +-->
+<!--          '缓存穿透将导致不存在的数据每次请求都要到存储层去查询， 失去了缓存保护后端存储的意义。\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 原因\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 自身业务代码或者数据出现问题\n' +-->
+<!--          '\t\t- 一些恶意攻击、 爬虫等造成大量空命中。\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 解决方案\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 缓存空对象\n' +-->
+<!--          '\n' +-->
+<!--          '- 缓存失效(击穿)\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 概念\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 由于大批量缓存在同一时间失效可能导致大量请求同时穿透缓存直达数据库，可能会造成数据库瞬间压力过大 甚至挂掉，对于这种情况我们在批量增加缓存时最好将这一批数据的缓存过期时间设置为一个时间段内的不同 时间。\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 解决\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- \n' +-->
+<!--          '\n' +-->
+<!--          '- 缓存雪崩\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 概念\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 缓存雪崩指的是缓存层支撑不住或宕掉后， 流量会像奔逃的野牛一样， 打向后端存储层。 由于缓存层承载着大量请求， 有效地保护了存储层， 但是如果缓存层由于某些原因不能提供服务(比如超大并 发过来，缓存层支撑不住，或者由于缓存设计不好，类似大量请求访问bigkey，导致缓存能支撑的并发急剧下 降)， 于是大量请求都会打到存储层， 存储层的调用量会暴增， 造成存储层也会级联宕机的情况。\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 解决\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t-  保证缓存层服务高可用性，比如使用Redis Sentinel或Redis Cluster。\n' +-->
+<!--          '\t\t-  依赖隔离组件为后端限流熔断并降级。比如使用Sentinel或Hystrix限流降级组件。 比如服务降级，我们可以针对不同的数据采取不同的处理方式。当业务应用访问的是非核心数据(例如电商商 品属性，用户信息等)时，暂时停止从缓存中查询这些数据，而是直接返回预定义的默认降级信息、空值或是 错误提示信息;当业务应用访问的是核心数据(例如电商商品库存)时，仍然允许查询缓存，如果缓存缺失， 也可以继续通过数据库读取。\n' +-->
+<!--          '\t\t- 提前演练。 在项目上线前， 演练缓存层宕掉后， 应用以及后端的负载情况以及可能出现的问题， 在此基 础上做一些预案设定。\n' +-->
+<!--          '\n' +-->
+<!--          '- 热点缓存key重建优化\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 概念\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 之前的冷数据（不是热点数据），突然量大了，怎么办，没有缓存打到了数据库，解决:&ndash;&gt;开发人员使用“缓存+过期时间”的策略既可以加速数据读写， 又保证数据的定期更新， 这种模式基本能够满 足绝大部分需求\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 但是问题场景\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 当前key是一个热点key(例如一个热门的娱乐新闻)，并发量非常大。\n' +-->
+<!--          '\t\t- 重建缓存不能在短时间完成， 可能是一个复杂计算， 例如复杂的SQL、 多次IO、 多个依赖等\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 解决\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 要解决这个问题主要就是要避免大量线程同时重建缓存。 我们可以利用互斥锁来解决，此方法只允许一个线程重建缓存， 其他线程等待重建缓存的线程执行完， 重新从 缓存获取数据即可。\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- \n' +-->
+<!--          '\n' +-->
+<!--          '### 缓存数据库双写不一致\n' +-->
+<!--          '\n' +-->
+<!--          '- 现象\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 双写不一致情况\n' +-->
+<!--          '\t- 读写并发不一致\n' +-->
+<!--          '\n' +-->
+<!--          '- 解决方案\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 1、对于并发几率很小的数据(如个人维度的订单数据、用户数据等)，这种几乎不用考虑这个问题，很少会发生 缓存不一致，可以给缓存数据加上过期时间，每隔一段时间触发读的主动更新即可。\n' +-->
+<!--          '\t-  2、就算并发很高，如果业务上能容忍短时间的缓存数据不一致(如商品名称，商品分类菜单等)，缓存加上过期 时间依然可以解决大部分业务对于缓存的要求。\n' +-->
+<!--          '\t-  3、如果不能容忍缓存数据不一致，可以通过加读写锁保证并发读写或写写的时候按顺序排好队，读读的时候相 当于无锁。\n' +-->
+<!--          '\t-  4、也可以用阿里开源的canal通过监听数据库的binlog日志及时的去修改缓存，但是引入了新的中间件，增加 了系统的复杂度。\n' +-->
+<!--          '\n' +-->
+<!--          '## 优化\n' +-->
+<!--          '\n' +-->
+<!--          '### 不要用keys 查询，很慢，会阻塞其他操作 用scan 渐进式查询\n' +-->
+<!--          '\n' +-->
+<!--          '### 开发规范\n' +-->
+<!--          '\n' +-->
+<!--          '- 一、键值设计\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 1. key名设计\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- (1)【建议】: 可读性和可管理性\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- 以业务名(或数据库名)为前缀(防止key冲突)，用冒号分隔，比如业务名:表名:id\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t\t-  trade:order:1\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- (2)【建议】:简洁性\n' +-->
+<!--          '\t\t- (3)【强制】:不要包含特殊字符\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 2. value设计\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- (1)【强制】:拒绝bigkey(防止网卡流量、慢查询)\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- 1. 字符串类型:它的big体现在单个value值很大，一般认为超过10KB就是bigkey。\n' +-->
+<!--          '\t\t\t- 2. 非字符串类型:哈希、列表、集合、有序集合，它们的big体现在元素个数太多。一般来说，string类型控制在10KB以内，hash、list、set、zset元素个数不要超过5000。 反例:一个包含200万个元素的list。\n' +-->
+<!--          '\t\t\t- 3、非字符串的bigkey，不要使用del删除，使用hscan、sscan、zscan方式渐进式删除，同时要注 意防止bigkey过期时间自动删除问题(例如一个200万的zset设置1小时过期，会触发del操作，造 成阻塞)\n' +-->
+<!--          '\n' +-->
+<!--          '\t- bigkey的产生:\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- (1) 社交类:粉丝列表，如果某些明星或者大v不精心设计下，必是bigkey。\n' +-->
+<!--          '\t\t- (2) 统计类:例如按天存储某项功能或者网站的用户集合，除非没几个人用，否则必是bigkey。\n' +-->
+<!--          '\t\t-  (3) 缓存类:将数据从数据库load出来序列化放到Redis里，这个方式非常常用，但有两个地方需 要注意，第一，是不是有必要把所有字段都缓存;第二，有没有相关关联的数据，有的同学为了 图方便把相关数据都存一个key下，产生bigkey。\n' +-->
+<!--          '\n' +-->
+<!--          '\t- bigkey的危害:\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 1.导致redis阻塞\n' +-->
+<!--          '\t\t- 2.网络拥塞 bigkey也就意味着每次获取要产生的网络流量较大，假设一个bigkey为1MB，客户端每秒访问 量为1000，那么每秒产生1000MB的流量，对于普通的千兆网卡(按照字节算是128MB/s)的服务 器来说简直是灭顶之灾，而且一般服务器会采用单机多实例的方式来部署，也就是说一个bigkey 可能会对其他实例也造成影响，其后果不堪设想。\n' +-->
+<!--          '\t\t- 3. 过期删除 有个bigkey，它安分守己(只执行简单的命令，例如hget、lpop、zscore等)，但它设置了过 期时间，当它过期后，会被删除，如果没有使用Redis 4.0的过期异步删除(lazyfree-lazy- expire yes)，就会存在阻塞Redis的可能性。\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 如何优化bigkey\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 1. 拆\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- big list: list1、list2、...listN\n' +-->
+<!--          '\t\t\t- big hash:可以讲数据分段存储，比如一个大的key，假设存了1百万的用户数据，可以拆分成 200个key，每个key下面存放5000个用户数据\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 2. 如果bigkey不可避免，也要思考一下要不要每次把所有元素都取出来(例如有时候仅仅需要 hmget，而不是hgetall)，删除也是一样，尽量使用优雅的方式来处理。\n' +-->
+<!--          '\t\t- (2)【推荐】:选择适合的数据类型。\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- \n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 控制key的生命周期，redis不是垃圾桶\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- 建议使用expire设置过期时间(条件允许可以打散过期时间，防止集中过期)。\n' +-->
+<!--          '\n' +-->
+<!--          '### Redis对于过期键有三种清除策略\n' +-->
+<!--          '(如 果不设置最大内存，当 Redis 内存超出物理内存限制时，内存的数据会开始和磁盘产生频繁的交 换 (swap)，会让 Redis 的性能急剧下降。)\n' +-->
+<!--          '\n' +-->
+<!--          '- 1. 被动删除:当读/写一个已经过期的key时，会触发惰性删除策略，直接删除掉这个过期 key\n' +-->
+<!--          '- 2. 主动删除:由于惰性删除策略无法保证冷数据被及时删掉，所以Redis会定期主动淘汰一 批已过期的key\n' +-->
+<!--          '- 3. 当前已用内存超过maxmemory限定时，触发主动清理策略\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 主动清理策略\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- a) 针对设置了过期时间的key做处理:\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- 1. volatile-ttl:在筛选时，会针对设置了过期时间的键值对，根据过期时间的先后进行删 除，越早过期的越先被删除。\n' +-->
+<!--          '\t\t\t- 2. volatile-random:就像它的名称一样，在设置了过期时间的键值对中，进行随机删除。\n' +-->
+<!--          '\t\t\t-  3. volatile-lru:会使用 LRU 算法筛选设置了过期时间的键值对删除。\n' +-->
+<!--          '\t\t\t- 4. volatile-lfu:会使用 LFU 算法筛选设置了过期时间的键值对删除。\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- b) 针对所有的key做处理:\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- 5. allkeys-random:从所有键值对中随机选择并删除数据。\n' +-->
+<!--          '\t\t\t-  6. allkeys-lru:使用 LRU 算法在所有数据中进行筛选删除。\n' +-->
+<!--          '\t\t\t-  7. allkeys-lfu:使用 LFU 算法在所有数据中进行筛选删除。\n' +-->
+<!--          '\n' +-->
+<!--          '- 算法\n' +-->
+<!--          '\n' +-->
+<!--          '\t- LRU 算法(Least Recently Used，最近最少使用)\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 手写LRU\n' +-->
+<!--          '\n' +-->
+<!--          '\t- LFU 算法(Least Frequently Used，最不经常使用)\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 手写LFU\n' +-->
+<!--          '\n' +-->
+<!--          '### 使用pipeline将多个命令一起发送到redis执行\n' +-->
+<!--          '\n' +-->
+<!--          '### 高并发下进行链接池调休，最大和空闲调整为一致\n' +-->
+<!--          '\n' +-->
+<!--          '- \n' +-->
+<!--          '\n' +-->
+<!--          '\t- 设置相等后进行链接池预热\n' +-->
+<!--          '\n' +-->
+<!--          '## cluster集群架构\n' +-->
+<!--          '\n' +-->
+<!--          '### 搭建\n' +-->
+<!--          '\n' +-->
+<!--          '- 环境准备\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 三台虚拟机  每台机器一主一从，一共6个redis实列\n' +-->
+<!--          '\t- 安装redis，参考上面的单节点（每台都安装）\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 防火墙\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 准备目录（每台）\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 创建 usr/local/redis‐cluster目录，创建文件夹，存放redis相关数据（持久化、日志等）\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- \n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 拷贝安装的redis目录下的 redis,conf到每一个目录下面\n' +-->
+<!--          '\n' +-->
+<!--          '- 安装\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 1、修改配置文件，准备机群部署\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 1、后台运行\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- daemonize yes\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 2、端口\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- port 8001(分别对每个机器的端口号进行设置)\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 3、进程\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- pidfile /var/run/redis_8001.pid \n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 4、数据存放目录\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- dir /usr/local/redis‐cluster/8001/\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 5、打开配置中注释的集群配置\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- cluster‐enabled yes(启动集群模式)\n' +-->
+<!--          '\t\t\t- cluster‐config‐file nodes‐8001.conf(集群节点信息文件，这里800x最好和port对应上)\n' +-->
+<!--          '\t\t\t- cluster‐node‐timeout 5000\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 6、取消ip绑定\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- 注释 bind 127.0.0.1\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 7、关闭保护模式\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- protected‐mode no\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 8、appendonly yes\n' +-->
+<!--          '\t\t- 9、设置密码 添加如下，配置中没有\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- requirepass patrick\n' +-->
+<!--          '\t\t\t- masterauth patrick\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 2、将上面配置好的文件 复制一份到8004目录下 \n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 进行替换操作 \n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- :%s/源字符串/目的字符串/g\n' +-->
+<!--          ':%s/8001/8004/g\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 3、其他机器也进行一样的操作\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- scp redis.conf root@ip:目录\n' +-->
+<!--          '\t\t- 直接进行替换操作即可\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 4、分别启动6个redis实例，然后检查是否启动成功\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- ps -ef|grep redis\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- \n' +-->
+<!--          '\n' +-->
+<!--          '\t- 5、启动 /home/redis/redis-5.0.3/src/redis-cli -a patrick &#45;&#45;cluster create &#45;&#45;cluster-replicas 1 10.211.55.4:8001 10.211.55.5:8002 10.211.55.6:8003 10.211.55.4:8004 10.211.55.5:8005 10.211.55.6:8006\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 命令里的1代表为每个创建的主服务器节点创建一个从服务器节点\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 6、验证\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 连接任意一个客户端即可:./redis‐cli ‐c ‐h ‐p (‐a访问服务端密码，‐c表示集群模式，指定ip地址 和端口号)\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- src/redis-cli -a patrick -c -h 10.211.55.4 -p 8001\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 进行验证: cluster info(查看集群信息)、cluster nodes(查看节点列表)\n' +-->
+<!--          '\t\t- 进行数据操作验证\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 7、springboot 验证\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- pom\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- \n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- yaml\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- \n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 代码地址\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- https://github.com/gaopeng1234567/SpringBoot\n' +-->
+<!--          '\n' +-->
+<!--          '- 重启\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 把所有的关掉然后单独每个重新启动就行，切记不要执行创建机群哪个命令\n' +-->
+<!--          '\n' +-->
+<!--          '### 和哨兵架构的对比\n' +-->
+<!--          '\n' +-->
+<!--          '- 在redis3.0以前的版本要实现集群一般是借助哨兵sentinel工具来监控master节点的状态，如果master节点异 常，则会做主从切换，将某一台slave作为master，哨兵的配置略微复杂，并且性能和高可用性等各方面表现 一般，特别是在主从切换的瞬间存在访问瞬断的情况，而且哨兵模式只有一个主节点对外提供服务，没法支持 很高的并发，且单个主节点内存也不宜设置得过大，否则会导致持久化文件过大，影响数据恢复或主从同步的 效率\n' +-->
+<!--          '\n' +-->
+<!--          '### 高可用机群架构\n' +-->
+<!--          '\n' +-->
+<!--          '- \n' +-->
+<!--          '- redis集群是一个由多个主从节点群组成的分布式服务器群，它具有复制、高可用和分片特性。Redis集群不需 要sentinel哨兵∙也能完成节点移除和故障转移的功能。需要将每个节点设置成集群模式，这种集群模式没有中 心节点，可水平扩展，据官方文档称可以线性扩展到上万个节点(官方推荐不超过1000个节点)。redis集群的 性能和高可用性均优于之前版本的哨兵模式，且集群配置非常简单\n' +-->
+<!--          '\n' +-->
+<!--          '### Redis集群原理分析\n' +-->
+<!--          '\n' +-->
+<!--          '- 设计\n' +-->
+<!--          '\n' +-->
+<!--          '\t- Redis Cluster 将所有数据划分为 16384 个 slots(槽位)，每个节点负责其中一部分槽位。槽位的信息存储于每 个节点中。在查找和设置key时候，会根据槽位定位算法找出所在节点\n' +-->
+<!--          '\n' +-->
+<!--          '- 槽位定位算法\n' +-->
+<!--          '\n' +-->
+<!--          '\t- Cluster 默认会对 key 值使用 crc16 算法进行 hash 得到一个整数值，然后用这个整数值对 16384 进行取模 来得到具体槽位。\n' +-->
+<!--          '\t- HASH_SLOT = CRC16(key) mod 16384\n' +-->
+<!--          '\n' +-->
+<!--          '- 跳转重定位\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 不是自己管的槽点，就计算跳转给其他节点\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 当客户端向一个错误的节点发出了指令，该节点会发现指令的 key 所在的槽位并不归自己管理，这时它会向客 户端发送一个特殊的跳转指令携带目标操作的节点地址，告诉客户端去连这个节点去获取数据。客户端收到指 令后除了跳转到正确的节点上去操作，还会同步更新纠正本地的槽位映射表缓存，后续所有 key 将使用新的槽 位映射表。\n' +-->
+<!--          '\n' +-->
+<!--          '- 网络抖动\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 为解决这种问题，Redis Cluster 提供了一种选项cluster­node­timeout，表示当某个节点持续 timeout 的时间失联时，才可以认定该节点出现故障，需要进行主从切换。如果没有这个选项，网络抖动会导致主从频 繁切换 (数据的重新复制)。\n' +-->
+<!--          '\n' +-->
+<!--          '- Redis集群选举原理分析\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 当slave发现自己的master变为FAIL状态时，便尝试进行Failover，以期成为新的master。由于挂掉的master 可能会有多个slave，从而存在多个slave竞争成为master节点的过程， 其过程如下\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 1.slave发现自己的master变为FAIL\n' +-->
+<!--          '\t\t- 2.将自己记录的集群currentEpoch加1，并广播FAILOVER_AUTH_REQUEST 信息3.其他节点收到该信息，只有master响应，判断请求者的合法性，并发送FAILOVER_AUTH_ACK，对每一个 epoch只发送一次ack\n' +-->
+<!--          '\t\t- 4.尝试failover的slave收集master返回的FAILOVER_AUTH_ACK\n' +-->
+<!--          '\t\t-  5.slave收到超过半数master的ack后变成新Master(这里解释了集群为什么至少需要三个主节点，如果只有两 个，当其中一个挂了，只剩一个主节点是不能选举成功的)\n' +-->
+<!--          '\t\t- 6.slave广播Pong消息通知其他集群节点。\n' +-->
+<!--          '\n' +-->
+<!--          '- 集群脑裂数据丢失问题\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 现象\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- redis集群没有过半机制会有脑裂问题，网络分区导致脑裂后多个主节点对外提供写服务，一旦网络分区恢复， 会将其中一个主节点变为从节点，这时会有大量数据丢失。\n' +-->
+<!--          '\n' +-->
+<!--          '## 哨兵架构\n' +-->
+<!--          '\n' +-->
+<!--          '### 搭建\n' +-->
+<!--          '\n' +-->
+<!--          '- 1、复制一份sentinel.conf文件\n' +-->
+<!--          '\n' +-->
+<!--          '\t- cpsentinel.confsentinel‐26379.conf\n' +-->
+<!--          '\n' +-->
+<!--          '- 2、将相关配置修改为如下值:\n' +-->
+<!--          '\n' +-->
+<!--          '\t- port 26379\n' +-->
+<!--          '\t- daemonize yes\n' +-->
+<!--          '\t-  pidfile"/var/run/redis‐sentinel‐26379.pid"\n' +-->
+<!--          '\t-  logfile"26379.log"\n' +-->
+<!--          '\t-  dir "/usr/local/redis‐5.0.3/data"\n' +-->
+<!--          '\t- sentinel monitor mymaster 192.168.0.60 63792\n' +-->
+<!--          '\n' +-->
+<!--          '- 3、启动sentinel哨兵实例\n' +-->
+<!--          '\n' +-->
+<!--          '\t- src/redis‐sentinelsentinel‐26379.conf\n' +-->
+<!--          '\n' +-->
+<!--          '- 4、查看sentinel的info信息\n' +-->
+<!--          '\n' +-->
+<!--          '\t- src/redis‐cli‐p26379\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 127.0.0.1:26379>info\n' +-->
+<!--          '\n' +-->
+<!--          '- 5、可以自己再配置两个sentinel，端口26380和26381，注意上述配置文件里的对应数字都要修改\n' +-->
+<!--          '\n' +-->
+<!--          '### \n' +-->
+<!--          '\n' +-->
+<!--          '### springboot项目核心配置\n' +-->
+<!--          '\n' +-->
+<!--          '- git\n' +-->
+<!--          '\n' +-->
+<!--          '### 概念\n' +-->
+<!--          '\n' +-->
+<!--          '- sentinel哨兵是特殊的redis服务，不提供读写服务，主要用来监控redis实例节点。 哨兵架构下client端第一次从哨兵找出redis的主节点，后续就直接访问redis的主节点，不会每次都通过 sentinel代理访问redis的主节点，当redis的主节点发生变化，哨兵会第一时间感知到，并且将新的redis 主节点通知给client端(这里面redis的client端一般都实现了订阅功能，订阅sentinel发布的节点变动消息)\n' +-->
+<!--          '\n' +-->
+<!--          '### 切换问题\n' +-->
+<!--          '\n' +-->
+<!--          '- 当主节点挂掉之后，再重新选举之前，就不能访问了\n' +-->
+<!--          '\n' +-->
+<!--          '## 主从架构\n' +-->
+<!--          '\n' +-->
+<!--          '### 搭建\n' +-->
+<!--          '\n' +-->
+<!--          '- 复制一份redis.conf文件\n' +-->
+<!--          '- 修改\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 端口\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- port 6380\n' +-->
+<!--          '\n' +-->
+<!--          '\t- pidfile\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- pidfile /var/run/redis_6380.pid # 把pid进程号写入pidfile配置的文件\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 日志\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- logfile"6380.log"\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 指定数据存放目录\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- dir /usr/local/redis‐5.0.3/data/6380\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 配置主从复制\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- replicaof  10.211.55.5 6379\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- #从本机6379的redis实例复制数据，Redis5.0之前使用slaveof\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 配置从节点只读\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t-  replica‐read‐only yes\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t\t- 这个默认配置了，不用动\n' +-->
+<!--          '\n' +-->
+<!--          '### 主从复制原理\n' +-->
+<!--          '\n' +-->
+<!--          '- \n' +-->
+<!--          '- 1、从节点根据配置文件中的 地址先建立链接\n' +-->
+<!--          '2、然后发送psync命令给主节点\n' +-->
+<!--          '3、主节点收到后执行bgsave命令，然后生产dump文件发送给从节点\n' +-->
+<!--          '4、再次期间主节点执行的命令放入缓存区\n' +-->
+<!--          '5、从节点拿到dump之后把自己的dump先情况然后加载到内存中\n' +-->
+<!--          '6.主节点缓存区中的数据发送给从节点执行\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 要是备份过程中从节点挂了怎么办？\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 主节点中有记录offset，并且有缓冲区，如果挂太久则再次全量备份\n' +-->
+<!--          '\n' +-->
+<!--          '### 主从复制风暴\n' +-->
+<!--          '\n' +-->
+<!--          '- 多个从节点向主节点复制数据\n' +-->
+<!--          '\n' +-->
+<!--          '主从复制风暴(多个从节点同时复制主节点导致主节点压力过大)，可以做如 下架构，让部分从节点与从节点(与主节点同步)同步数据\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 解决\n' +-->
+<!--          '\n' +-->
+<!--          '## 安装\n' +-->
+<!--          '\n' +-->
+<!--          '### 单机\n' +-->
+<!--          '\n' +-->
+<!--          '- 下载安装包\n' +-->
+<!--          '\n' +-->
+<!--          '\t- wget http://download.redis.io/releases/redis-5.0.3.tar.gz\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 可以替换版本\n' +-->
+<!--          '\n' +-->
+<!--          '- 解压\n' +-->
+<!--          '\n' +-->
+<!--          '\t- tar -xzvf redis-5.0.3.tar.gz\n' +-->
+<!--          '\n' +-->
+<!--          '- 进入到解压好的redis‐5.0.3目录下，进行编译与安装\n' +-->
+<!--          '\n' +-->
+<!--          '\t- make\n' +-->
+<!--          '\n' +-->
+<!--          '- 修改配置redis.conf\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 后台启动\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- daemonize   yes\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 关闭保护模式，开启的话，只有本机才可以访问redis\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- protected‐mode no\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 允许外网访问\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- bind 127.0.0.1 注释掉\n' +-->
+<!--          '\n' +-->
+<!--          '- 启动\n' +-->
+<!--          '\n' +-->
+<!--          '\t- src/redis‐server  redis.conf\n' +-->
+<!--          '\n' +-->
+<!--          '- 验证\n' +-->
+<!--          '\n' +-->
+<!--          '\t- ps -ef|grep redis   \n' +-->
+<!--          '\n' +-->
+<!--          '- 进入redis客户端\n' +-->
+<!--          '\n' +-->
+<!--          '\t- src/redis‐cli\n' +-->
+<!--          '\n' +-->
+<!--          '- 退出redis服务\n' +-->
+<!--          '\n' +-->
+<!--          '\t- pkill redis‐server\n' +-->
+<!--          '\t- kill 进程号\n' +-->
+<!--          '\t- src/redis‐cli shutdown\n' +-->
+<!--          '\n' +-->
+<!--          '### 工具\n' +-->
+<!--          '\n' +-->
+<!--          '- 压力测试\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 自带的 src/redis-benchmark\n' +-->
+<!--          '\n' +-->
+<!--          '## 面试问题\n' +-->
+<!--          '\n' +-->
+<!--          '### redis是单线程么？\n' +-->
+<!--          '\n' +-->
+<!--          '- redis不是单线程\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 单线程\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 在多个服务请求执行redis相关key,value操作的时候他是单线程去执行的\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 多线程\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 其他功能，比如持久化、异步删除、机群同步等等\n' +-->
+<!--          '\n' +-->
+<!--          '### Redis 单线程为什么还能这么快?\n' +-->
+<!--          '\n' +-->
+<!--          '- 因为它所有的数据都在内存中，所有的运算都是内存级别的运算，而且单线程避免了多线程的切换性 能损耗问题。正因为 Redis 是单线程，所以要小心使用 Redis 指令，对于那些耗时的指令(比如 keys)，一定要谨慎使用，一不小心就可能会导致 Redis 卡顿。\n' +-->
+<!--          '\n' +-->
+<!--          '### Redis 单线程如何处理那么多的并发客户端连接?\n' +-->
+<!--          '\n' +-->
+<!--          '- Redis的IO多路复用:redis利用epoll来实现IO多路复用，将连接信息和事件放到队列中，依次放到 文件事件分派器，事件分派器将事件分发给事件处理器。\n' +-->
+<!--          '\n' +-->
+<!--          '\t- \n' +-->
+<!--          '\n' +-->
+<!--          '- 多个客户端链接到redis, 客户端发送一个set key value命令的执行流程: 首先建立连接，然后发送数据到redis服务端，服务端执行应答然后read你的请求，然后执行，然后将结果返回给客户端。 那么思考: 一个一个服务上传很大数据来操作，因为是单线程，其他客户端就要只等待吗？显然不是，他采取了NIO多路复用，先执行其他命令，等你上传好了然后在执行你，和CPU很像，等你IO完成之后再来操作\n' +-->
+<!--          '\n' +-->
+<!--          '### 为什么redis集群至少要三个主节点？\n' +-->
+<!--          '\n' +-->
+<!--          '- 这是因为Redis集群选举原理要求的，从节点只有收到超过半数主节点的ack才能变成新节点，如果只有两个，一个主节点挂了，他的从节点无法被选举成主节点的\n' +-->
+<!--          '\n' +-->
+<!--          '### 如何解决redis和数据库数据一致性问题？\n' +-->
+<!--          '\n' +-->
+<!--          '- 1、首先要根据场景选择，比如一些个人数据，只有自己访问，并发场景会很少，只需要redis中的数据加上过期时间即可，隔一段时间读取数据库更新缓存即可。假如并发很高，但是能容忍短时间哪数据不一致的话，此方法也可以\n' +-->
+<!--          '2、如果要求数据强一致场景，核心思路就是并发读写和写写排队，可以采取消息队列，但是会使代码复杂，不建议，网上也有博客说采用双删的方式，也就是第一次删除缓存后，在隔200ms后在删除一次，防止其他线程更新缓存，但这样会影响接口响应速度，我个人比较喜欢使用redisson的分布式锁，采用读写锁，因为大部分场景都是读多写少，所以在读读的时候相当于没锁，写写或者写度的时候上写锁即可实现，代码也比较简答，效率相对算高。当然了还有阿里开源的canal通过监听数据库的binlog及时去修改缓存，但是引入了新的中间件（需要单独部署），搞复杂了\n' +-->
+<!--          '3、以上都是针对的读多写少，如果是写多读也多，又不能容忍缓存数据不一致那\n' +-->
+<!--          '就没必要加缓存了，可以直接操作数据库。\n' +-->
+<!--          '\n' +-->
+<!--          '### 什么是redis,说说你对他的理解\n' +-->
+<!--          '\n' +-->
+<!--          '- 是什么\n' +-->
+<!--          '\n' +-->
+<!--          '\t- redis是一个非常快的远程内存非关系型数据库，它可以存储健与五种不同类型的值之间的映射，可以将存储在内存中的健值对数据持久化到硬盘，可以使用复制特性来扩展读性能，还可以使用客户端分片来扩展写性能\n' +-->
+<!--          '\n' +-->
+<!--          '- 数据结构\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 具体有string，list,hash,set,zset\n' +-->
+<!--          '\n' +-->
+<!--          '- 使用场景\n' +-->
+<!--          '\n' +-->
+<!--          '\t- string\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 单值缓存\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- redisTemplate.opsForValue().set("patrick", "666");\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 对象缓存\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- \n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 分布式锁\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- \n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 文章阅读计数器\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- \n' +-->
+<!--          '\n' +-->
+<!--          '\t- list\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- Stack(栈) = LPUSH + LPOP\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- Queue(队列）= LPUSH + RPOP\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- Blocking MQ(阻塞队列）= LPUSH + BRPOP\n' +-->
+<!--          '\n' +-->
+<!--          '\n' +-->
+<!--          '\t- hash\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t- \n' +-->
+<!--          '\t\t- \n' +-->
+<!--          '\t\t- 文章点赞\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t\t- hincrby\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t- set\n' +-->
+<!--          '（交集、差集、并集、随机获取）\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 抽奖\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t- zset\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t- 排行榜\n' +-->
+<!--          '（分值范围特性）\n' +-->
+<!--          '\n' +-->
+<!--          '- 优点\n' +-->
+<!--          '\n' +-->
+<!--          '### 说说redis的持久化，个有什么优缺点\n' +-->
+<!--          '\n' +-->
+<!--          '- redis持久化有三种分别是RDB快照、AOF持久化、和redis4之后的混合持久化。\n' +-->
+<!--          '\n' +-->
+<!--          '\t- RDB快照是生产一个dump.rdb文件，可以配置redis.conf中的sava保存策略，也可以通过执行save或者bigsave命令主动触发，他的好处是rdb文件很小，适合定时备份，redis恢复起来很快，缺点是不能达到秒级持久化，并且大数据量很大的时候fork子进程会有10几秒的阻塞，并且redis宕机后会丢失未保存到快照中的数据\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 追问？ save和bigsava的区别？\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- \n' +-->
+<!--          '\n' +-->
+<!--          '\t- AOP持久化，是每当redis执行一条命令就会往aof文件中同样记录（先写入os cash每隔一段时间刷新到磁盘），它会按照一定规则进行aof重写，进而优化命令减少文件大小。优点是可以达到秒级备份，缺点是文件太大恢复很慢\n' +-->
+<!--          '\t- 混合模式其实就是AOF的增强版本，他在重写的时候不仅优化指令、而且还将之前的修改成了RDP文件格式\n' +-->
+<!--          '\n' +-->
+<!--          '### 说说redis的主动清除策略（内存回收）、key失效机制\n' +-->
+<!--          '\n' +-->
+<!--          '- 主动清除\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 当前已用内存超过maxmemory限定时，触发主动清理策略，采用LRU算法（最近最少使用）\n' +-->
+<!--          '\n' +-->
+<!--          '- key失效机制\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 主动方式\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- redis随机抽取一部分的key进行校验，如果已经失效，就删除淘汰,步骤如下\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t\t- 在有过期时间的key集合中随机抽取20个key。\n' +-->
+<!--          '\t\t\t- 删除所有的过期key\n' +-->
+<!--          '\t\t\t- 如果过期的key超过25%，重新执行步骤1.\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 被动方式\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 当客户端尝试访问key时，如果发现key已经失效了，就删除该key，并且告诉客户端该key已经失效了。\n' +-->
+<!--          '\n' +-->
+<!--          '### 说说集群、哨兵、主从的区别\n' +-->
+<!--          '\n' +-->
+<!--          '- 这就说的多了，都tm不想写了。\n' +-->
+<!--          '主从，就是master提供写的功能，slave提供读的功能，而主从之间的数据同步，首先是从根据配置文件中主节点ip进行链接，然后发送psync命令给主，然后主执行bigsave产生dump.rdp文件发送给从，然后从进行数据恢复。再次期间主进行的命令放入缓冲区中等从执行完后再把缓冲区的文件在执行。通过主从提高了redis的读写能力，比单机性能强劲，但是当时如果master或者redis宕机之后就没招了，所以有了哨兵模式，哨兵的架构是有一个哨兵集群，监控这所有主从节点，客户端首次通过哨兵得到节点信息，并且订阅哨兵，当节点信息发生变化时候哨兵通知给客户端，当有节点挂掉后会进行重新选举，有点是高可用，缺点是挂掉后会有短暂的无法访问，以为在选举。并且配置相对复杂，不适用于高并发下。所有我们采用cluster集群方式部署，是一个由多个主从节点群组成的分布式服务器群，它具有复制、高可用和分片特性，他不需要哨兵就能完成新的选举\n' +-->
+<!--          '\n' +-->
+<!--          '\t- 主从风暴\n' +-->
+<!--          '\n' +-->
+<!--          '\t\t- 多个从节点向主节点复制数据\n' +-->
+<!--          '\n' +-->
+<!--          '主从复制风暴(多个从节点同时复制主节点导致主节点压力过大)，可以做如 下架构，让部分从节点与从节点(与主节点同步)同步数据\n' +-->
+<!--          '\n' +-->
+<!--          '\t- cluster原理\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t- 设计\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t\t- Redis Cluster 将所有数据划分为 16384 个 slots(槽位)，每个节点负责其中一部分槽位。槽位的信息存储于每 个节点中。在查找和设置key时候，会根据槽位定位算法找出所在节点\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t- 槽位定位算法\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t\t- Cluster 默认会对 key 值使用 crc16 算法进行 hash 得到一个整数值，然后用这个整数值对 16384 进行取模 来得到具体槽位。\n' +-->
+<!--          '\t\t\t- HASH_SLOT = CRC16(key) mod 16384\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t- 跳转重定位\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t\t- 不是自己管的槽点，就计算跳转给其他节点\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t\t\t- 当客户端向一个错误的节点发出了指令，该节点会发现指令的 key 所在的槽位并不归自己管理，这时它会向客 户端发送一个特殊的跳转指令携带目标操作的节点地址，告诉客户端去连这个节点去获取数据。客户端收到指 令后除了跳转到正确的节点上去操作，还会同步更新纠正本地的槽位映射表缓存，后续所有 key 将使用新的槽 位映射表。\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t- 网络抖动\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t\t- 为解决这种问题，Redis Cluster 提供了一种选项cluster­node­timeout，表示当某个节点持续 timeout 的时间失联时，才可以认定该节点出现故障，需要进行主从切换。如果没有这个选项，网络抖动会导致主从频 繁切换 (数据的重新复制)。\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t- Redis集群选举原理分析\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t\t- 当slave发现自己的master变为FAIL状态时，便尝试进行Failover，以期成为新的master。由于挂掉的master 可能会有多个slave，从而存在多个slave竞争成为master节点的过程， 其过程如下\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t\t\t- 1.slave发现自己的master变为FAIL\n' +-->
+<!--          '\t\t\t\t- 2.将自己记录的集群currentEpoch加1，并广播FAILOVER_AUTH_REQUEST 信息3.其他节点收到该信息，只有master响应，判断请求者的合法性，并发送FAILOVER_AUTH_ACK，对每一个 epoch只发送一次ack\n' +-->
+<!--          '\t\t\t\t- 4.尝试failover的slave收集master返回的FAILOVER_AUTH_ACK\n' +-->
+<!--          '\t\t\t\t-  5.slave收到超过半数master的ack后变成新Master(这里解释了集群为什么至少需要三个主节点，如果只有两 个，当其中一个挂了，只剩一个主节点是不能选举成功的)\n' +-->
+<!--          '\t\t\t\t- 6.slave广播Pong消息通知其他集群节点。\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t- 集群脑裂数据丢失问题\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t\t- 现象\n' +-->
+<!--          '\t\n' +-->
+<!--          '\t\t\t\t- redis集群没有过半机制会有脑裂问题，网络分区导致脑裂后多个主节点对外提供写服务，一旦网络分区恢复， 会将其中一个主节点变为从节点，这时会有大量数据丢失。\n' +-->
+<!--          '\n' +-->
+<!--          '### Redis实现分布式锁讲讲\n' +-->
+<!--          '\n' +-->
+<!--          '- 当我们在单节点部署下，我可以通过sync关键字实现多线程竞争资源的安全性问题，但是在分布式下也就是多节点部署下，这样的方式是不行的，我可以采用redis的setnx也就是set if not exist来实现，我们可以在需要加锁的代码第一行进行redis设置锁，设置一个key，并且设置超时时间防止死锁，然后如果设置成功就可以进行代码操作，否则等待或者友好返回，在代码执行完毕后要进行删除操作删除锁。这样基本可以满足大部分使用场景。但这样设计还是有问题的，因为我们的业务代码可能执行时间较长，我们过期时间设置的较早、或者中途redis挂掉了等情况，我们可以采用Redisson来实现，他实现的原理也是采用lua脚本，并且在当业务还没有执行完的时候他会给锁续命，当其他线程获取不到锁的时候，会进行while等待锁到期再次执行。\n' +-->
+<!--          '\n' +-->
+<!--          '### 说说缓存穿透、缓寸失效、缓寸雪崩的理解和解决方案\n' +-->
+<!--          '\n' +-->
+<!--          '- 见缓存设计及问题\n' +-->
+<!--          '\n' +-->
+<!--          '\n'-->
+<!--    };-->
+<!--  },-->
+<!--  mounted() {-->
+<!--  },-->
+<!--  methods: {-->
+<!--    changeEidter() {-->
+<!--      this.viewerShow = !this.viewerShow;-->
+<!--    }-->
+<!--  }-->
+<!--}-->
+<!--</script>-->
 
-<style scoped>
-.tui-editor-contents p {
-  color: #4a4a4a;
-  font-size: 16px;
-  line-height: 31px;
-}
+<!--<style scoped>-->
+<!--.tui-editor-contents p {-->
+<!--  color: #4a4a4a;-->
+<!--  font-size: 16px;-->
+<!--  line-height: 31px;-->
+<!--}-->
 
-.container {
-  width: 800px;
-  margin: 0 auto;
-}
-</style>
+<!--.container {-->
+<!--  width: 800px;-->
+<!--  margin: 0 auto;-->
+<!--}-->
+<!--</style>-->

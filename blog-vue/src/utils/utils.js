@@ -1,4 +1,5 @@
 // Preload fonts
+import WebFont from './webFont'
 const preloadFonts = (id) => {
     return new Promise((resolve) => {
         WebFont.load({
